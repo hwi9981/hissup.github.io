@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tuần 4</title>
+<style>
+    body {
+        background-color: #DDDDDD;
+    }
+    canvas {
+        background-color: white;
+        display: block;
+    }
+    #canvasholder {
+        border:2px solid black;
+        float: left; 
+    }
+</style>
+<script>
+
+
+    let canvas;    
+    let graphics;  
+    function drawCircle(x, y, r, fill, stroke, strokeWidth = 1){
+        graphics.beginPath();
+        graphics.arc(x, y, r, 0, 2*Math.PI)
+        graphics.closePath();
+        if (fill){
+            graphics.fillStyle = fill;
+            graphics.fill();
+        }
+
+        if (stroke){
+            graphics.lineWidth = strokeWidth;
+            graphics.strokeStyle = stroke;
+            graphics.stroke();
+        }
+    }
+
+    function drawLine(x1, y1, x2, y2, stroke, strokeWidth = 1){
+        graphics.beginPath()
+        graphics.moveTo(x1, y1)
+        graphics.lineTo(x2, y2)
+        graphics.closePath()
+        if (stroke){
+            graphics.lineWidth = strokeWidth;
+            graphics.strokeStyle = stroke;
+            graphics.stroke();
+        }
+    }
+    
+    
+    function drawSun(x, y){
+        graphics.setTransform(center)
+        graphics.translate(x, y) //translte là cho nó có vị trí
+        graphics.rotate(frameNumber*Math.PI/90)
+        for(let i = 0; i < 6; i++){
+            graphics.rotate( Math.PI/6)
+            drawLine(-40, 0, 40, 0, 'orange')
+        }
+        drawCircle(0, 0, 25, 'yellow', 'orange', 2)
+        
+    }
+    function drawRect(transform, x, y, w, h, fill, stroke, strokeWidth = 1){
+        graphics.setTransform(transform);
+        graphics.beginPath();
+        graphics.moveTo(x - w/2, y - h/2)
+        graphics.lineTo(x + w/2, y - h/2)
+        graphics.lineTo(x + w/2, y + h/2)
+        graphics.lineTo(x - w/2, y + h/2)
+        graphics.closePath();
+        if (fill){
+            graphics.fillStyle = fill;
+            graphics.fill();
+        }
+
+        if (stroke){
+            graphics.lineWidth = strokeWidth;
+            graphics.strokeStyle = stroke;
+            graphics.stroke();
+        }
+
+    }
+
+    function drawWheel(transform, x, y){
+        graphics.setTransform(transform)
+        graphics.translate(x, y) //translte là cho nó có vị trí
+        graphics.rotate(frameNumber*5*Math.PI/90)
+        drawCircle(0, 0, 20, 'gray', 'black', 5)
+        for(let i = 0; i < 6; i++){
+            graphics.rotate(Math.PI/6)
+            drawLine(-20, 0, 20, 0, 'black', 2)
+    }
+    }
+
+    function drawCar(x, y){
+        graphics.setTransform(center);
+        graphics.translate(x+frameNumber*2%250,y)
+        
+        let transform_car = graphics.getTransform()
+        drawWheel(transform_car, -40, 30)
+        drawWheel(transform_car, 40, 30)
+
+        drawRect(transform_car,0, 0, 150, 50, 'red')
+        drawRect(transform_car,0, -40, 80, 30, 'green')
+
+
+    }
+     
+
+    let center, frameNumber = 0;
+    function transform(){
+        graphics.setTransform(center);
+        graphics.clearRect(-300, -250, 600, 500);
+        frameNumber++;
+        drawSun(150, -180)
+        drawCar(0,0)
+        
+    }
+
+    function draw() {
+        graphics.translate(300, 250);
+        center = graphics.getTransform();  // lấy tất cả các hiệu ứng lưu vào biến center và đưa nó về tâm 0
+        setInterval(transform,1000/24)
+        
+     } // end of draw()
+    
+    function init() {
+        try {
+            canvas = document.getElementById("canvas");
+            graphics = canvas.getContext("2d");
+        } catch(e) {
+            document.getElementById("canvasholder").innerHTML =
+               "<p>Canvas graphics is not supported.<br>" +
+               "An error occurred while initializing graphics.</p>";
+            return;
+        }
+        draw(); 
+    }
+    
+    window.onload = init; 
+</script>
+</head>
+<body> 
+
+<h2>Tuần 4: Thêm hiệu ứng chuyển động</h2>
+
+<noscript>
+<p>JavaScript is required to use this page.</p>
+</noscript>
+
+<div id="canvasholder">
+<canvas id="canvas" width="600" height="500">
+    <!-- This message is shown on the page if the browser doesn't support the canvas element. -->
+Canvas not supported.
+</canvas>
+</div>
+
+</body>
+</html>
